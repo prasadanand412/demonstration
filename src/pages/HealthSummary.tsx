@@ -1,16 +1,64 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileDown } from "lucide-react";
+import { FileDown, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function HealthSummary() {
   const { toast } = useToast();
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleDownload = () => {
-    toast({
-      title: "PDF Generation",
-      description: "PDF export functionality will be available soon with edge function implementation",
-    });
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "Please log in to download your health summary",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const response = await supabase.functions.invoke('generate-health-summary-pdf', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to generate PDF');
+      }
+
+      // The response.data should be the PDF blob
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `health-summary-${new Date().toISOString().split('T')[0]}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Your health summary PDF has been downloaded",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (
@@ -34,10 +82,20 @@ export default function HealthSummary() {
           <Button
             size="lg"
             onClick={handleDownload}
+            disabled={isGenerating}
             className="bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-lg px-8 py-6"
           >
-            <FileDown className="mr-2 h-5 w-5" />
-            Download Health Summary (PDF)
+            {isGenerating ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Generating PDF...
+              </>
+            ) : (
+              <>
+                <FileDown className="mr-2 h-5 w-5" />
+                Download Health Summary (PDF)
+              </>
+            )}
           </Button>
           <p className="text-sm text-muted-foreground text-center max-w-md">
             Your health summary will include your complete medical history formatted in a professional, easy-to-read document.
