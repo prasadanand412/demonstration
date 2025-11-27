@@ -6,7 +6,10 @@ import {
   Pill, 
   Syringe, 
   FileDown,
-  LogOut
+  LogOut,
+  Activity,
+  BarChart3,
+  FileBarChart
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -34,6 +37,12 @@ const menuItems = [
   { title: "Medications", url: "/medications", icon: Pill },
   { title: "Vaccinations", url: "/vaccinations", icon: Syringe },
   { title: "Health Summary", url: "/health-summary", icon: FileDown },
+];
+
+const fitnessItems = [
+  { title: "Fitness Logs", url: "/fitness-logs", icon: Activity },
+  { title: "Fitness Analytics", url: "/fitness-analytics", icon: BarChart3 },
+  { title: "Fitness Report", url: "/fitness-report", icon: FileBarChart },
 ];
 
 export function AppSidebar() {
@@ -81,6 +90,24 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={location.pathname === item.url}>
+                    <NavLink to={item.url} end>
+                      <item.icon className="h-5 w-5" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Fitness Tracker</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {fitnessItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={location.pathname === item.url}>
                     <NavLink to={item.url} end>

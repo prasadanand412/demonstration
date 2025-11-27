@@ -50,6 +50,48 @@ export type Database = {
         }
         Relationships: []
       }
+      fitness_logs: {
+        Row: {
+          calories: number | null
+          created_at: string | null
+          date: string
+          distance_km: number | null
+          heart_rate: number | null
+          id: string
+          notes: string | null
+          steps: number | null
+          updated_at: string | null
+          user_id: string
+          water_ml: number | null
+        }
+        Insert: {
+          calories?: number | null
+          created_at?: string | null
+          date?: string
+          distance_km?: number | null
+          heart_rate?: number | null
+          id?: string
+          notes?: string | null
+          steps?: number | null
+          updated_at?: string | null
+          user_id: string
+          water_ml?: number | null
+        }
+        Update: {
+          calories?: number | null
+          created_at?: string | null
+          date?: string
+          distance_km?: number | null
+          heart_rate?: number | null
+          id?: string
+          notes?: string | null
+          steps?: number | null
+          updated_at?: string | null
+          user_id?: string
+          water_ml?: number | null
+        }
+        Relationships: []
+      }
       medical_reports: {
         Row: {
           created_at: string | null
