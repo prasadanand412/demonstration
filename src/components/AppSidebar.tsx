@@ -15,6 +15,7 @@ import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
 import {
   Sidebar,
   SidebarContent,
@@ -27,7 +28,6 @@ import {
   SidebarHeader,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Heart } from "lucide-react";
 
 const menuItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -70,20 +70,24 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
+      {/* -------- SIDEBAR HEADER -------- */}
       <SidebarHeader className="border-b border-sidebar-border">
         <div className="flex items-center gap-3 px-3 py-4">
+          {/* Custom logo image */}
           <div className="rounded-lg bg-gradient-to-br from-primary to-secondary p-2">
-            <Heart className="h-5 w-5 text-white" />
+            <img src="/icon.png" className="h-6 w-6" alt="App Logo" />
           </div>
+
           {open && (
             <div className="flex-1">
-              <h2 className="font-display text-lg font-semibold">Health Record</h2>
-              <p className="text-xs text-sidebar-foreground/70">Manager</p>
+              <h2 className="font-display text-lg font-semibold">Wellness+</h2>
+              <p className="text-xs text-sidebar-foreground/70">Health Manager</p>
             </div>
           )}
         </div>
       </SidebarHeader>
 
+      {/* -------- SIDEBAR CONTENT -------- */}
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
@@ -121,6 +125,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {/* -------- LOGOUT -------- */}
         <SidebarGroup className="mt-auto">
           <SidebarGroupContent>
             <SidebarMenu>
